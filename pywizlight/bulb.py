@@ -677,8 +677,13 @@ class wizlight:
         """
         if self.last_push + MAX_TIME_BETWEEN_PUSH < time.monotonic():
             resp = await self.send({"method": "getPilot", "params": {}})
+            power = await self.get_power()
+
             if resp is not None and "result" in resp:
-                self.state = PilotParser(resp["result"])
+                merged = dict()
+                merged.update(resp["result"])
+                merged.update({"power": power})
+                self.state = PilotParser(merged)
             else:
                 self.state = None
         return self.state
