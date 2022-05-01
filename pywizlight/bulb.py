@@ -553,6 +553,12 @@ class wizlight:
         if exception and self.response_future and not self.response_future.done():
             self.response_future.set_exception(exception)
 
+    async def get_power(self) -> float:
+        """Turn the light off."""
+        res = await self.send({"method": "getPower", "params": {}})
+        power = res['result']['power'] / 1000
+        return power
+
     async def get_bulbtype(self) -> BulbType:
         """Return the bulb type as BulbType object."""
         if self.bulbtype is not None:
@@ -618,6 +624,7 @@ class wizlight:
             await self.get_bulbtype()
         assert self.bulbtype  # Should have gotten set by get_bulbtype
         return SCENES_BY_CLASS.get(self.bulbtype.bulb_type, [])
+
 
     async def turn_off(self) -> None:
         """Turn the light off."""
