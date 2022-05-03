@@ -521,9 +521,11 @@ class wizlight:
         self.last_push = time.monotonic()
         old_state = self.state.pilotResult if self.state else None
         new_state = resp["params"]
+        _LOGGER.info("_on_push: %s", new_state)
         if old_state and states_match(old_state, new_state):
             return
         self.state = PilotParser(new_state)
+        _LOGGER.info("_on_push state", self.state)
         if self.push_callback:
             self.push_callback(self.state)
 

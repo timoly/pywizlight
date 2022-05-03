@@ -129,8 +129,10 @@ class PushManager:
         # so we no longer send them since all it effectively
         # does it generate additional network traffic.
         if method == "firstBeat" and self.discovery_callback:
+            _LOGGER.info("firstBeat")
             self.discovery_callback(DiscoveredBulb(addr[0], mac))
         if method == "syncPilot" and mac in self.subscriptions:
+            _LOGGER.info("syncPilot")
             merged = dict()
             merged.update(resp)
             merged.update({"foo": "bar"})
