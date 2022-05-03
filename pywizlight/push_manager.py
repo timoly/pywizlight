@@ -132,8 +132,8 @@ class PushManager:
             _LOGGER.info("firstBeat")
             self.discovery_callback(DiscoveredBulb(addr[0], mac))
         if method == "syncPilot" and mac in self.subscriptions:
-            _LOGGER.info("syncPilot")
             merged = dict()
             merged.update(resp)
             merged.update({"foo": "bar"})
+            _LOGGER.info("syncPilot %s", merged)
             self.subscriptions[mac](merged, addr)

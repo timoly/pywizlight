@@ -515,16 +515,25 @@ class wizlight:
         """Set the callback for when a new device is discovered."""
         PushManager().get().set_discovery_callback(callback)
 
-    def _on_push(self, resp: dict, addr: Tuple[str, int]) -> None:
+    async def _on_push(self, resp: dict, addr: Tuple[str, int]) -> None:
         """Handle a syncPilot from the device."""
         self.history.message(HISTORY_PUSH, resp)
         self.last_push = time.monotonic()
         old_state = self.state.pilotResult if self.state else None
         new_state = resp["params"]
         _LOGGER.info("_on_push: %s", new_state)
-        if old_state and states_match(old_state, new_state):
+
+        power = await self.get_power()
+        _LOGGER.info("_on_push power %d", power)
+        merged = dict()
+        merged.update(new_state)
+        merged.update({"power": power})
+
+        if old_state and states_match(old_state, merged):
             return
-        self.state = PilotParser(new_state)
+
+        self.state = PilotParser(merged)
+
         _LOGGER.info("_on_push state", self.state)
         if self.push_callback:
             self.push_callback(self.state)
