@@ -310,6 +310,9 @@ class PilotParser:
             return 1000
         return self.pilotResult.get("sceneId")
 
+    def get_foo(self) -> Optional[dict]:
+        return self.pilotResult
+
     def get_scene(self) -> Optional[str]:
         """Get the current scene name."""
         scene_id = self.get_scene_id()
@@ -557,6 +560,7 @@ class wizlight:
         """Turn the light off."""
         res = await self.send({"method": "getPower", "params": {}})
         power = res['result']['power'] / 1000
+        _LOGGER.info("get_power %d", power)
         return power
 
     async def get_bulbtype(self) -> BulbType:
