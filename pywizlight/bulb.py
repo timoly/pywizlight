@@ -679,11 +679,14 @@ class wizlight:
         getPilot - gets the current bulb state - no parameters need to be included
         {"method": "getPilot", "id": 24}
         """
+        _LOGGER.info("updateState")
         if self.last_push + MAX_TIME_BETWEEN_PUSH < time.monotonic():
+            _LOGGER.info("updateState true")
             resp = await self.send({"method": "getPilot", "params": {}})
             power = await self.get_power()
 
             if resp is not None and "result" in resp:
+                _LOGGER.info("updateState power %d", power)
                 merged = dict()
                 merged.update(resp["result"])
                 merged.update({"power": power})
