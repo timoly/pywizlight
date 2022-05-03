@@ -114,7 +114,7 @@ class PushManager:
 
     def _on_push(self, message: bytes, addr: Tuple[str, int]) -> None:
         """Handle a response from the device."""
-        _LOGGER.debug("%s: PUSH << %s", addr, message)
+        _LOGGER.info("%s: PUSH << %s", addr, message)
         if message == b"test":
             return  # App sends these to test connectivity
         try:
@@ -131,4 +131,7 @@ class PushManager:
         if method == "firstBeat" and self.discovery_callback:
             self.discovery_callback(DiscoveredBulb(addr[0], mac))
         if method == "syncPilot" and mac in self.subscriptions:
-            self.subscriptions[mac](resp, addr)
+            merged = dict()
+            merged.update(resp)
+            merged.update({"foo": "bar"})
+            self.subscriptions[mac](merged, addr)
