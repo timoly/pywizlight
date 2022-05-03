@@ -113,7 +113,7 @@ class PushManager:
         return _cancel
 
     async def _async_send_register(self, mac: object, merged: object, addr: Tuple[str, int] ) -> None:
-        _LOGGER.info("_async_send_register %s %s %s", mac, merged, addr)
+        _LOGGER.info("_async_send_register")
         await self.subscriptions[mac](merged, addr)
 
     def _on_push(self, message: bytes, addr: Tuple[str, int]) -> None:
