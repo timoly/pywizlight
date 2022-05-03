@@ -112,6 +112,10 @@ class PushManager:
 
         return _cancel
 
+    async def _async_send_register(self, mac: object, merged: object, addr: Tuple[str, int] ) -> None:
+        _LOGGER.info("_async_send_register %s %s %s", mac, merged, addr)
+        await self.subscriptions[mac](merged, addr)
+
     def _on_push(self, message: bytes, addr: Tuple[str, int]) -> None:
         """Handle a response from the device."""
         _LOGGER.info("%s: PUSH << %s", addr, message)
@@ -136,4 +140,5 @@ class PushManager:
             merged.update(resp)
             merged.update({"foo": "bar"})
             _LOGGER.info("syncPilot %s", merged)
-            self.subscriptions[mac](merged, addr)
+            # self.subscriptions[mac](merged, addr)
+            asyncio.create_task(self._async_send_register(mac, merged, addr))
