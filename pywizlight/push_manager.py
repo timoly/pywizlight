@@ -112,13 +112,12 @@ class PushManager:
 
         return _cancel
 
-    async def _async_send_register(self, mac: object, merged: object, addr: Tuple[str, int] ) -> None:
-        _LOGGER.info("_async_send_register")
-        await self.subscriptions[mac](merged, addr)
+    async def _async_send_register(self, mac: object, resp: object, addr: Tuple[str, int] ) -> None:
+        await self.subscriptions[mac](resp, addr)
 
     def _on_push(self, message: bytes, addr: Tuple[str, int]) -> None:
         """Handle a response from the device."""
-        _LOGGER.info("%s: PUSH << %s", addr, message)
+        _LOGGER.debug("%s: PUSH << %s", addr, message)
         if message == b"test":
             return  # App sends these to test connectivity
         try:
@@ -133,12 +132,7 @@ class PushManager:
         # so we no longer send them since all it effectively
         # does it generate additional network traffic.
         if method == "firstBeat" and self.discovery_callback:
-            _LOGGER.info("firstBeat")
             self.discovery_callback(DiscoveredBulb(addr[0], mac))
         if method == "syncPilot" and mac in self.subscriptions:
-            merged = dict()
-            merged.update(resp)
-            merged.update({"foo": "bar"})
-            _LOGGER.info("syncPilot %s", merged)
             # self.subscriptions[mac](merged, addr)
-            asyncio.create_task(self._async_send_register(mac, merged, addr))
+            asyncio.create_task(self._async_send_register(mac, resp, addr))
