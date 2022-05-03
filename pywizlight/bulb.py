@@ -534,7 +534,7 @@ class wizlight:
 
         self.state = PilotParser(merged)
 
-        _LOGGER.info("_on_push state", self.state)
+        _LOGGER.info("_on_push state %s", self.state)
         if self.push_callback:
             self.push_callback(self.state)
 
